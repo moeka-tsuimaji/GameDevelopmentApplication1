@@ -84,7 +84,7 @@ void Scene::Finalize()
 
 #ifdef D_PIVOT_CENTER
 
-//当たり判定チェック処理(　　の中心で当たり判定を取る）
+//当たり判定チェック処理(矩形の中心で当たり判定を取る）
 void Scene::HitCheckObject(GameObject* a, GameObject* b)
 {
 	//2つのオブジェクトの距離を取得
@@ -113,8 +113,8 @@ void Scene::HitCheckObject(GameObnect* a, Gameobject* b)
 
 	//矩形Aと矩形Bの位置関係を調べる
 	if ((a->GetLocation().x < b_lower_right.x) &&
-		(a->GetLocation().y < b_lower_right.y) &&
-		(a_lower_right.x > b->GetLocation().x) &&
+		(a->GetLocation().y > b_lower_right.y) &&
+		(a_lower_right.x < b->GetLocation().x) &&
 		(a_lower_right.y > b->GetLocation().y))
 	{
 		//オブジェクトに対してHit判定を通知する
