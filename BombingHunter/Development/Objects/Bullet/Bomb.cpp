@@ -1,12 +1,14 @@
 #include "Bomb.h"
 #include"DxLib.h"
 
-Bomb::Bomb() : animation_count(0), b_speed(0)
+Bomb::Bomb() : animation_count(0), direction(0.0f), b_speed(0)
 {
 	animation[0] = NULL;
 	animation[1] = NULL;
 	animation[2] = NULL;
 	animation[3] = NULL;
+	hitflag = false;
+	animflag = false;
 }
 
 Bomb::~Bomb()
@@ -32,6 +34,8 @@ void Bomb::Initialize()
 	image = animation[0];
 
 	b_speed = 2.0f;
+
+	direction.y = b_speed;
 
 	type = BOMB;
 }
@@ -61,15 +65,52 @@ void Bomb::Finalize()
 
 void Bomb::OnHitCollision(GameObject* hit_object)
 {
-	
+	if (hit_object->GetType() == ENEMY)
+	{
+		//“–‚½‚Á‚½Žž‚Ìˆ—
+		direction.y = 0.0f;
+		animflag = true;
+	}
+}
+
+bool Bomb::GetHitFlag()
+{
+	return hitflag;
 }
 
 void Bomb::Movement()
 {
-	location.y += b_speed;
+	location += direction;
+	if (location.y >= 400)
+	{
+		animflag = true;
+	}
 }
 
 void Bomb::AnimationControl()
 {
-
+	if (animflag == true)
+	{
+		animation_count++;
+		if (image == animation[0] && animation_count == 10)
+		{
+			radian = 0.0f;
+			image = animation[1];
+			animation_count = 0;
+		}
+		else if (image == animation[1] && animation_count == 10)
+		{
+			image = animation[2];
+			animation_count = 0;
+		}
+		else if (image == animation[2] && animation_count == 10)
+		{
+			image = animation[3];
+			animation_count = 0;
+		}
+		else
+		{
+			hitflag = true;
+		}
+	}
 }

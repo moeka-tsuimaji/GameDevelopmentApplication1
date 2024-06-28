@@ -8,6 +8,7 @@ Enemy::Enemy() : animation_count(0), direction(0.0f), flag_count(0)
 	animation[0] = NULL;
 	animation[1] = NULL;
 	shotflag = false;
+	hitflag = false;
 }
 
 Enemy::~Enemy()
@@ -18,7 +19,7 @@ Enemy::~Enemy()
 void Enemy::Initialize()
 {
 	srand((unsigned int)time(NULL));
-	int RandomSpeed =  1 + rand() % 3;
+	int RandomSpeed =  1 + rand() % 4;
 
 	//画像の読み込み
 	if (location.y >= 390.0f)
@@ -36,19 +37,20 @@ void Enemy::Initialize()
 		animation[0] = LoadGraph("Resource/Images/Harpy/1.png");
 		animation[1] = LoadGraph("Resource/Images/Harpy/2.png");
 	}
+	
 	if (location.x == 640.0f)
 	{
-		direction.x = -1.0f;//-RandomSpeed;
+		direction.x = -RandomSpeed;
 	}
 	else
 	{
-		direction.x = 1.0f;//RandomSpeed;
+		direction.x = RandomSpeed;
 	}
 
 	//エラーチェック
 	if (animation[0] == -1 || animation[1] == -1)
 	{
-		throw("ハコテキの画像がありません\n");
+		throw("敵の画像がありません\n");
 	}
 
 	//向きの設定
@@ -81,7 +83,6 @@ void Enemy::Update()
 
 	//アニメーション制御
 	AnimationControl();
-
 }
 
 //描画処理
@@ -122,6 +123,7 @@ void Enemy::OnHitCollision(GameObject* hit_object)
 	{
 		//当たった時の処理
 		direction = 0.0f;
+		hitflag = true;
 	}
 }
 
@@ -131,6 +133,11 @@ bool Enemy::GetFlag()
 		shotflag = false;
 		return flag;
 	
+}
+
+bool Enemy::GetHitFlag()
+{
+	return hitflag;
 }
 //移動処理
 void Enemy::Movement()
@@ -149,6 +156,10 @@ void Enemy::Movement()
 
 	//進行方向に向かって、位置座標を変更する
 	location += direction;
+	if (location.x >= 660 || location.x <= -30)
+	{
+		hitflag = true;
+	}
 }
 
 //アニメーション制御

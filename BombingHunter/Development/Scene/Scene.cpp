@@ -15,6 +15,7 @@ Scene::Scene() : objects()
 {
 	gh = NULL;
 	create_count = NULL;
+	BackGround_sound = NULL;
 }
 
 //デストラクタ
@@ -30,12 +31,14 @@ void Scene::Initialize()
 	//プレイヤーを生成する
 	CreateObject<Player>(Vector2D(320.0f, 50.0f));
 	gh = LoadGraph("Resource/Images/BackGround.png");
+	BackGround_sound = LoadSoundMem("Resource/Sounds/Evaluation/BGM_arrows.wav");
 	create_count = 0;
 }
 
 //更新処理
 void Scene::Update()
 { 
+	PlaySoundMem(BackGround_sound, DX_PLAYTYPE_LOOP, FALSE);
 	this->create_count++;
 
 	int create_count = 0;
@@ -44,15 +47,16 @@ void Scene::Update()
 	//シーンに存在するオブジェクトの更新処理
 	for (GameObject* obj : objects)
 	{
-		obj->Update();
-		if (obj->GetType() == ENEMY)
-		{
-			if (dynamic_cast<Enemy*>(obj)->GetFlag())
+			obj->Update();
+			if (obj->GetType() == ENEMY)
 			{
-				create_count++;
-				enemy_location.push_back((obj)->GetLocation());
+				if (dynamic_cast<Enemy*>(obj)->GetFlag())
+				{
+					create_count++;
+					enemy_location.push_back((obj)->GetLocation());
+				}
+
 			}
-		}
 	}
 
 		for (int i = 0; i < create_count; i++)
@@ -68,13 +72,34 @@ void Scene::Update()
 		{
 			//当たり判定チェック処理
 			HitCheckObject(objects[i], objects[j]);
+			if (objects[i]->GetType() == ENEMY)
+			{
+				if (dynamic_cast<Enemy*>(objects[i])->GetHitFlag())
+				{
+					objects.erase(objects.begin() + i);
+				}
+			}
+			if (objects[i]->GetType() == BULLET)
+			{
+				if (dynamic_cast<EnemyBullet*>(objects[i])->GetHitFlag())
+				{
+					objects.erase(objects.begin() + i);
+				}
+			}
+			if (objects[i]->GetType() == BOMB)
+			{
+				if (dynamic_cast<Bomb*>(objects[i])->GetHitFlag())
+				{
+					objects.erase(objects.begin() + i);
+				}
+			}
 		}
 	}
 
 	//2秒に1回敵を生成する
 	if (this->create_count >= CREATE_SPAN)
 	{
-		int RandomEnemy = GetRand(2);
+		int RandomEnemy = GetRand(3);
 		int randomlocationflag = GetRand(1);
 		float x;
 		if (randomlocationflag == 1)
@@ -117,7 +142,7 @@ void Scene::Draw() const
 	//シーンに存在するオブジェクトの描画処理
 	for (GameObject* obj : objects)
 	{
-		obj->Draw();
+			obj->Draw();
 	}
 }
 

@@ -6,7 +6,10 @@ class Bomb : public GameObject
 private:
 	int animation[4];
 	int animation_count;
+	Vector2D direction;    //is•ûŒü
 	float b_speed;
+	bool hitflag;          //“–‚½‚Á‚½‚©‚Ç‚¤‚©
+	bool animflag;        
 
 public:
 	Bomb();
@@ -19,6 +22,7 @@ public:
 
 	//“–‚½‚è”»’è’Ê’mˆ—
 	virtual void OnHitCollision(GameObject* hit_object) override;
+	bool GetHitFlag();
 
 private:
 	void Movement();

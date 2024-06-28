@@ -8,7 +8,8 @@ class Scene
 private:
 	std::vector<GameObject*> objects;   //オブジェクトリスト
 	int gh;                             //グラフィックハンドル
-	int create_count;
+	int create_count;                   //敵が生成されるまでの時間
+	int BackGround_sound;
 
 public:
 	Scene();

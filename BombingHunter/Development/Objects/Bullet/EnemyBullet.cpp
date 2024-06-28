@@ -7,6 +7,8 @@ EnemyBullet::EnemyBullet() : animation_count(0), speed(0)
 	animation[1] = NULL;
 	animation[2] = NULL;
 	animation[3] = NULL;
+	hitflag = false;
+	animflag = false;
 }
 
 EnemyBullet::~EnemyBullet()
@@ -27,7 +29,7 @@ void EnemyBullet::Initialize()
 
 	radian = 0.0f;
 
-	box_size = 64.0f;
+	box_size = 20.0f;
 
 	image = animation[0];
 
@@ -35,6 +37,7 @@ void EnemyBullet::Initialize()
 
 	type = BULLET;
 
+	
 }
 
 void EnemyBullet::Update()
@@ -65,15 +68,48 @@ void EnemyBullet::OnHitCollision(GameObject* hit_object)
 	{
 		//“–‚½‚Á‚½Žž‚Ìˆ—
 		direction = 0.0f;
+		animflag = true;
 	}
+}
+
+bool EnemyBullet::GetHitFlag()
+{
+	return hitflag;
 }
 
 void EnemyBullet::Movement()
 {
 	location.y += direction.y;
+	if (location.y >= 500 || location.y <= -20)
+	{
+		animflag = true;
+	}
 }
 
 void EnemyBullet::AnimationControl()
 {
-
+	if (animflag == true)
+	{
+		animation_count++;
+		if (image == animation[0] && animation_count == 10)
+		{
+			radian = 0.0f;
+			image = animation[1];
+			animation_count = 0;
+		}
+		else if (image == animation[1] && animation_count == 10)
+		{
+			image = animation[2];
+			animation_count = 0;
+		}
+		else if (image == animation[2] && animation_count == 10)
+		{
+			image = animation[3];
+			animation_count = 0;
+		}
+		else
+		{
+			hitflag = true;
+		}
+	}
 }

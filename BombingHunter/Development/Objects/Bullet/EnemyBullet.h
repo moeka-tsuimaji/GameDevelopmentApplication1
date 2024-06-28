@@ -8,6 +8,8 @@ private:
 	int animation_count;
 	Vector2D direction;
 	float speed;
+	bool hitflag;          //“–‚½‚Á‚½‚©‚Ç‚¤‚©
+	bool animflag;
 
 public:
 	EnemyBullet();
@@ -20,6 +22,7 @@ public:
 
 	//“–‚½‚è”»’è’Ê’mˆ—
 	virtual void OnHitCollision(GameObject* hit_object) override;
+	bool GetHitFlag();
 
 private:
 	void Movement();

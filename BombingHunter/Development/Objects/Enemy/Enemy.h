@@ -8,8 +8,10 @@ private:
 	int animation[2];      //アニメーション画像
 	int animation_count;   //アニメーション時間
 	Vector2D direction;    //進行方向
-	bool shotflag;
-	int flag_count;
+	bool shotflag;         //弾を撃つ判定
+	int flag_count;        //フラグのカウント
+	bool hitflag;          //当たったかどうか
+
 public:
 	Enemy();
 	~Enemy();
@@ -22,6 +24,7 @@ public:
 	//当たり判定通知処理
 	virtual void OnHitCollision(GameObject* hit_object) override;
 	bool GetFlag();
+	bool GetHitFlag();
 private:
 	void Movement();           //移動処理
 	void AnimationControl();   //アニメーション制御

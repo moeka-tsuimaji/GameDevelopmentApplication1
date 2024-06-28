@@ -101,17 +101,6 @@ void Player::Movement()
 		flip_flag = FALSE;
 	}
 
-	//ã‰ºˆÚ“®
-	if (InputControl::GetKey(KEY_INPUT_UP))
-	{
-		velocity.y = -1.0f;
-		//flip_flag = TRUE;
-	}
-
-	if (InputControl::GetKey(KEY_INPUT_DOWN))
-	{
-		velocity.y = 1.0f;
-	}
 	//Œ»İ‚ÌˆÊ’uÀ•W‚É‘¬‚³‚ğ‰ÁZ‚·‚é
 	location += velocity;
 }
