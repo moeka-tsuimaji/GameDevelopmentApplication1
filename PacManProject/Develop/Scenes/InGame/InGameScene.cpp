@@ -1,6 +1,10 @@
 ﻿#include "InGameScene.h"
 #include "../../Objects/Player/Player.h"
 #include "../../Objects/Enemy/EnemyBase.h"
+#include"../../Objects/Enemy/Pinky.h"
+#include"../../Objects/Enemy/Blinky.h"
+#include"../../Objects/Enemy/Inky.h"
+#include"../../Objects/Enemy/Clyde.h"
 #include "../../Objects/Wall/Wall.h"
 #include "../../Objects/Food/Food.h"
 #include "../../Objects/Food/PowerFood.h"
@@ -184,10 +188,25 @@ void InGameScene::LoadStageMapCSV()
 				generate_location = (Vector2D((float)(spos_x - 1), (float)(spos_y - 1)) * D_OBJECT_SIZE) + (D_OBJECT_SIZE / 2.0f);
 				player = CreateObject<Player>(generate_location);
 				break;
-			// エネミー
-			case 'E':
+			// アカべエ
+			case 'b':
 				generate_location = (Vector2D((float)(spos_x - 1), (float)(spos_y - 1)) * D_OBJECT_SIZE) + (D_OBJECT_SIZE / 2.0f);
-				CreateObject<EnemyBase>(generate_location);
+				CreateObject<Blinky>(generate_location);
+				break;
+				//ピンキー
+			case 'p':
+				generate_location = (Vector2D((float)(spos_x - 1), (float)(spos_y - 1)) * D_OBJECT_SIZE) + (D_OBJECT_SIZE / 2.0f);
+				CreateObject<Pinky>(generate_location);
+				break;
+				//アオスケ
+			case 'i':
+				generate_location = (Vector2D((float)(spos_x - 1), (float)(spos_y - 1)) * D_OBJECT_SIZE) + (D_OBJECT_SIZE / 2.0f);
+				CreateObject<Inky>(generate_location);
+				break;
+				//グズタ
+			case 'c':
+				generate_location = (Vector2D((float)(spos_x - 1), (float)(spos_y - 1)) * D_OBJECT_SIZE) + (D_OBJECT_SIZE / 2.0f);
+				CreateObject<Clyde>(generate_location);
 				break;
 			// 上記以外
 			default:

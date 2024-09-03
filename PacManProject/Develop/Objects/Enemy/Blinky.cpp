@@ -1,10 +1,10 @@
-#include"EnemyBase.h"
+#include "Blinky.h"
 #include"../../Utility/ResourceManager.h"
 #include"DxLib.h"
 
 #define D_ENEMY_SPEED  (100.0f)
 
-EnemyBase::EnemyBase() :
+Blinky::Blinky() :
 	move_animation(),
 	eyes_animation(),
 	velocity(0.0f),
@@ -20,12 +20,12 @@ EnemyBase::EnemyBase() :
 
 }
 
-EnemyBase::~EnemyBase()
+Blinky::~Blinky()
 {
 
 }
 
-void EnemyBase::Initialize()
+void Blinky::Initialize()
 {
 	//アニメーション画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -46,7 +46,7 @@ void EnemyBase::Initialize()
 	mobility = eMobilityType::Movable;
 }
 
-void EnemyBase::Update(float delta_second)
+void Blinky::Update(float delta_second)
 {
 	switch (enemy_state)
 	{
@@ -79,9 +79,10 @@ void EnemyBase::Update(float delta_second)
 	default:
 		break;
 	}
+	
 }
 
-void EnemyBase::Draw(const Vector2D& screen_offset) const
+void Blinky::Draw(const Vector2D& screen_offset) const
 {
 	//親クラスの描画処理を呼び出す
 	__super::Draw(screen_offset);
@@ -94,7 +95,7 @@ void EnemyBase::Draw(const Vector2D& screen_offset) const
 	}
 }
 
-void EnemyBase::Finalize()
+void Blinky::Finalize()
 {
 	//動的配列の解放
 	move_animation.clear();
@@ -105,7 +106,7 @@ void EnemyBase::Finalize()
 /// 当たり判定通知処理
 /// </summary>
 /// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
-void EnemyBase::OnHitCollision(GameObjectBase* hit_object)
+void Blinky::OnHitCollision(GameObjectBase* hit_object)
 {
 	//当たったオブジェクトが壁だったら
 	if (hit_object->GetCollision().object_type == eObjectType::wall)
@@ -134,17 +135,19 @@ void EnemyBase::OnHitCollision(GameObjectBase* hit_object)
 	{
 		enemy_state = eEnemyState::IJIKE;
 	}
+
+	
 }
 /// <summary>
 /// エネミーの状態を取得する
 /// </summary>
 /// <returns>エネミーの状態</returns>
-eEnemyState EnemyBase::GetEnemyState() const
+eEnemyState Blinky::GetEnemyState() const
 {
 	return enemy_state;
 }
 
-bool EnemyBase::GetDestroy() const
+bool Blinky::GetDestroy() const
 {
 	return is_destroy;
 }
@@ -153,7 +156,7 @@ bool EnemyBase::GetDestroy() const
 ///移動処理 
 /// </summary>
 /// <param name="delta_second">1フレーム当たりの時間</param>
-void EnemyBase::Movement(float delta_second)
+void Blinky::Movement(float delta_second)
 {
 	//移動量から移動方向を更新
 	if (Vector2D::Distance(old_location, location) == 0.0f)
@@ -214,22 +217,22 @@ void EnemyBase::Movement(float delta_second)
 	//進行方向の移動量を追加
 	switch (now_direction_state)
 	{
-	case EnemyBase::UP:
+	case Blinky::UP:
 		velocity.y = -1.0f;
 		break;
-	case EnemyBase::DOWN:
+	case Blinky::DOWN:
 		velocity.y = 1.0f;
 		break;
-	case EnemyBase::LEFT:
+	case Blinky::LEFT:
 		velocity.x = -1.0f;
 		break;
-	case EnemyBase::RIGHT:
+	case Blinky::RIGHT:
 		velocity.x = 1.0f;
 		break;
 	default:
 		velocity = 0.0f;
 		now_direction_state = next_direction_state;
-		next_direction_state = EnemyBase::LEFT;
+		next_direction_state = Blinky::LEFT;
 		break;
 	}
 
@@ -239,16 +242,16 @@ void EnemyBase::Movement(float delta_second)
 	{
 		switch (next_direction_state)
 		{
-		case EnemyBase::UP:
+		case Blinky::UP:
 			velocity.y = -1.0f;
 			break;
-		case EnemyBase::RIGHT:
+		case Blinky::RIGHT:
 			velocity.x = 1.0f;
 			break;
-		case EnemyBase::DOWN:
+		case Blinky::DOWN:
 			velocity.y = 1.0f;
 			break;
-		case EnemyBase::LEFT:
+		case Blinky::LEFT:
 			velocity.x = -1.0f;
 			break;
 		default:
@@ -280,7 +283,7 @@ void EnemyBase::Movement(float delta_second)
 	}
 }
 
-void EnemyBase::AnimationControl(float delta_second)
+void Blinky::AnimationControl(float delta_second)
 {
 	//移動中のアニメーション
 	animation_time += delta_second;
@@ -288,16 +291,16 @@ void EnemyBase::AnimationControl(float delta_second)
 	{
 		animation_time = 0.0f;
 		animation_count++;
-		eyes_animation_count++;
 		if (animation_count >= 2)
 		{
 			animation_count = 0;
 		}
 		//画像の設定
-		int dir_num = (int)now_direction_state;
+		/*int dir_num = (int)now_direction_state;
 		if (0 <= dir_num && dir_num < 2)
 		{
 			image = move_animation[(dir_num * 2) + animation_num[animation_count]];
-		}
+		}*/
+		image = move_animation[0 + animation_num[animation_count]];
 	}
 }

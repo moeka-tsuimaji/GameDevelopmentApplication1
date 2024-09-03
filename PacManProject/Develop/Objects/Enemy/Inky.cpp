@@ -1,16 +1,16 @@
-#include"EnemyBase.h"
+#include "Inky.h"
 #include"../../Utility/ResourceManager.h"
 #include"DxLib.h"
 
 #define D_ENEMY_SPEED  (100.0f)
 
-EnemyBase::EnemyBase() :
+Inky::Inky() :
 	move_animation(),
 	eyes_animation(),
 	velocity(0.0f),
 	enemy_state(eEnemyState::CHACE),
-	now_direction_state(eDirectionState::LEFT),
-	next_direction_state(eDirectionState::LEFT),
+	now_direction_state(eDirectionState::DOWN),
+	next_direction_state(eDirectionState::DOWN),
 	animation_time(0),
 	animation_count(0),
 	eyes_animation_count(0),
@@ -20,12 +20,12 @@ EnemyBase::EnemyBase() :
 
 }
 
-EnemyBase::~EnemyBase()
+Inky::~Inky()
 {
 
 }
 
-void EnemyBase::Initialize()
+void Inky::Initialize()
 {
 	//アニメーション画像の読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -46,13 +46,13 @@ void EnemyBase::Initialize()
 	mobility = eMobilityType::Movable;
 }
 
-void EnemyBase::Update(float delta_second)
+void Inky::Update(float delta_second)
 {
 	switch (enemy_state)
 	{
 	case eEnemyState::CHACE:
 		//画像の設定
-		image = move_animation[0];
+		image = move_animation[4];
 		//移動処理
 		Movement(delta_second);
 		//アニメーション制御
@@ -81,7 +81,7 @@ void EnemyBase::Update(float delta_second)
 	}
 }
 
-void EnemyBase::Draw(const Vector2D& screen_offset) const
+void Inky::Draw(const Vector2D& screen_offset) const
 {
 	//親クラスの描画処理を呼び出す
 	__super::Draw(screen_offset);
@@ -94,7 +94,7 @@ void EnemyBase::Draw(const Vector2D& screen_offset) const
 	}
 }
 
-void EnemyBase::Finalize()
+void Inky::Finalize()
 {
 	//動的配列の解放
 	move_animation.clear();
@@ -105,7 +105,7 @@ void EnemyBase::Finalize()
 /// 当たり判定通知処理
 /// </summary>
 /// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
-void EnemyBase::OnHitCollision(GameObjectBase* hit_object)
+void Inky::OnHitCollision(GameObjectBase* hit_object)
 {
 	//当たったオブジェクトが壁だったら
 	if (hit_object->GetCollision().object_type == eObjectType::wall)
@@ -139,12 +139,12 @@ void EnemyBase::OnHitCollision(GameObjectBase* hit_object)
 /// エネミーの状態を取得する
 /// </summary>
 /// <returns>エネミーの状態</returns>
-eEnemyState EnemyBase::GetEnemyState() const
+eEnemyState Inky::GetEnemyState() const
 {
 	return enemy_state;
 }
 
-bool EnemyBase::GetDestroy() const
+bool Inky::GetDestroy() const
 {
 	return is_destroy;
 }
@@ -153,7 +153,7 @@ bool EnemyBase::GetDestroy() const
 ///移動処理 
 /// </summary>
 /// <param name="delta_second">1フレーム当たりの時間</param>
-void EnemyBase::Movement(float delta_second)
+void Inky::Movement(float delta_second)
 {
 	//移動量から移動方向を更新
 	if (Vector2D::Distance(old_location, location) == 0.0f)
@@ -214,22 +214,22 @@ void EnemyBase::Movement(float delta_second)
 	//進行方向の移動量を追加
 	switch (now_direction_state)
 	{
-	case EnemyBase::UP:
+	case Inky::UP:
 		velocity.y = -1.0f;
 		break;
-	case EnemyBase::DOWN:
+	case Inky::DOWN:
 		velocity.y = 1.0f;
 		break;
-	case EnemyBase::LEFT:
+	case Inky::LEFT:
 		velocity.x = -1.0f;
 		break;
-	case EnemyBase::RIGHT:
+	case Inky::RIGHT:
 		velocity.x = 1.0f;
 		break;
 	default:
 		velocity = 0.0f;
 		now_direction_state = next_direction_state;
-		next_direction_state = EnemyBase::LEFT;
+		next_direction_state = Inky::LEFT;
 		break;
 	}
 
@@ -239,16 +239,16 @@ void EnemyBase::Movement(float delta_second)
 	{
 		switch (next_direction_state)
 		{
-		case EnemyBase::UP:
+		case Inky::UP:
 			velocity.y = -1.0f;
 			break;
-		case EnemyBase::RIGHT:
+		case Inky::RIGHT:
 			velocity.x = 1.0f;
 			break;
-		case EnemyBase::DOWN:
+		case Inky::DOWN:
 			velocity.y = 1.0f;
 			break;
-		case EnemyBase::LEFT:
+		case Inky::LEFT:
 			velocity.x = -1.0f;
 			break;
 		default:
@@ -280,7 +280,7 @@ void EnemyBase::Movement(float delta_second)
 	}
 }
 
-void EnemyBase::AnimationControl(float delta_second)
+void Inky::AnimationControl(float delta_second)
 {
 	//移動中のアニメーション
 	animation_time += delta_second;
@@ -297,7 +297,7 @@ void EnemyBase::AnimationControl(float delta_second)
 		int dir_num = (int)now_direction_state;
 		if (0 <= dir_num && dir_num < 2)
 		{
-			image = move_animation[(dir_num * 2) + animation_num[animation_count]];
+			image = move_animation[(dir_num * 1) + animation_num[animation_count]];
 		}
 	}
 }
