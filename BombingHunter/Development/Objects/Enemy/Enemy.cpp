@@ -40,11 +40,11 @@ void Enemy::Initialize()
 	
 	if (location.x == 640.0f)
 	{
-		direction.x = -RandomSpeed;
+		direction.x = -RandomSpeed * 0.5;
 	}
 	else
 	{
-		direction.x = RandomSpeed;
+		direction.x = RandomSpeed * 0.5;
 	}
 
 	//エラーチェック
@@ -127,6 +127,7 @@ void Enemy::OnHitCollision(GameObject* hit_object)
 	}
 }
 
+//弾生成フラグ取得処理
 bool Enemy::GetFlag()
 {
 		bool flag = shotflag;
@@ -135,6 +136,7 @@ bool Enemy::GetFlag()
 	
 }
 
+//当たり判定フラグ取得処理
 bool Enemy::GetHitFlag()
 {
 	return hitflag;
@@ -156,6 +158,7 @@ void Enemy::Movement()
 
 	//進行方向に向かって、位置座標を変更する
 	location += direction;
+	//画面外に行ったら削除する
 	if (location.x >= 660 || location.x <= -30)
 	{
 		hitflag = true;

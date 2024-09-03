@@ -7,9 +7,8 @@ private:
 	int animation[4];
 	int animation_count;
 	Vector2D direction;
-	float speed;
 	bool hitflag;          //当たったかどうか
-	bool animflag;
+	bool animflag;          //アニメーションフラグ
 
 public:
 	EnemyBullet();
@@ -22,10 +21,11 @@ public:
 
 	//当たり判定通知処理
 	virtual void OnHitCollision(GameObject* hit_object) override;
+	//当たり判定フラグ取得処理
 	bool GetHitFlag();
 
 private:
-	void Movement();
-	void AnimationControl();
+	void Movement();            //移動処理
+	void AnimationControl();    //アニメーション制御
 };
 

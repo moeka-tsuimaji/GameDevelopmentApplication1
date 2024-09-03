@@ -23,7 +23,9 @@ public:
 
 	//当たり判定通知処理
 	virtual void OnHitCollision(GameObject* hit_object) override;
+	//弾生成フラグ取得処理
 	bool GetFlag();
+	//当たり判定フラグ取得処理
 	bool GetHitFlag();
 private:
 	void Movement();           //移動処理

@@ -7,15 +7,18 @@
 #include<stdlib.h>
 #include"DxLib.h"
 
-#define D_PIVOT_CENTER
 #define CREATE_SPAN (120)
 
 //コンストラクタ
-Scene::Scene() : objects()
+Scene::Scene() : objects(), NumberImage()
 {
 	gh = NULL;
 	create_count = NULL;
 	BackGround_sound = NULL;
+	gametime = NULL;
+	TimerImage = NULL;
+	ScoreImage = NULL;
+	HighScoreImage = NULL;
 }
 
 //デストラクタ
@@ -30,17 +33,43 @@ void Scene::Initialize()
 {
 	//プレイヤーを生成する
 	CreateObject<Player>(Vector2D(320.0f, 50.0f));
+	//背景画像読み込み
 	gh = LoadGraph("Resource/Images/BackGround.png");
+	//メインBGM読み込み
 	BackGround_sound = LoadSoundMem("Resource/Sounds/Evaluation/BGM_arrows.wav");
+	//タイマー画像読み込み
+	TimerImage = LoadGraph("Resource/Images/TimeLimit/timer-03.png");
+	//スコア画像読み込み
+	ScoreImage = LoadGraph("Resource/Images/Score/font-21.png");
+	//ハイスコア画像読み込み
+	HighScoreImage = LoadGraph("Resource/Images/Score/hs.png");
+	//数字画像読み込み
+	 NumberImage[0] = LoadGraph("Resource/Images/Score/0.png");
+	 NumberImage[1] = LoadGraph("Resource/Images/Score/1.png");
+	 NumberImage[2] = LoadGraph("Resource/Images/Score/2.png");
+	 NumberImage[3] = LoadGraph("Resource/Images/Score/3.png");
+	 NumberImage[4] = LoadGraph("Resource/Images/Score/4.png");
+	 NumberImage[5] = LoadGraph("Resource/Images/Score/5.png");
+	 NumberImage[6] = LoadGraph("Resource/Images/Score/6.png");
+	 NumberImage[7] = LoadGraph("Resource/Images/Score/7.png");
+	 NumberImage[8] = LoadGraph("Resource/Images/Score/8.png");
+	 NumberImage[9] = LoadGraph("Resource/Images/Score/9.png");
+
 	create_count = 0;
+	//ゲーム時間の初期化
+	gametime = TIMELIMET;
 }
 
 //更新処理
 void Scene::Update()
 { 
+	//BGMの再生
 	PlaySoundMem(BackGround_sound, DX_PLAYTYPE_LOOP, FALSE);
+
+	//敵の生成カウント
 	this->create_count++;
 
+	//敵の弾の生成カウント
 	int create_count = 0;
 	std::vector<Vector2D> enemy_location;
 
@@ -48,8 +77,10 @@ void Scene::Update()
 	for (GameObject* obj : objects)
 	{
 			obj->Update();
+			//オブジェクトがENEMYだったら
 			if (obj->GetType() == ENEMY)
 			{
+				//弾生成のフラグを受け取ったら
 				if (dynamic_cast<Enemy*>(obj)->GetFlag())
 				{
 					create_count++;
@@ -58,7 +89,7 @@ void Scene::Update()
 
 			}
 	}
-
+	    //カウント分だけ敵の弾を生成する
 		for (int i = 0; i < create_count; i++)
 		{
 			CreateObject<EnemyBullet>(enemy_location[i]);
@@ -72,6 +103,7 @@ void Scene::Update()
 		{
 			//当たり判定チェック処理
 			HitCheckObject(objects[i], objects[j]);
+			//敵の当たり判定
 			if (objects[i]->GetType() == ENEMY)
 			{
 				if (dynamic_cast<Enemy*>(objects[i])->GetHitFlag())
@@ -79,6 +111,7 @@ void Scene::Update()
 					objects.erase(objects.begin() + i);
 				}
 			}
+			//敵の弾の当たり判定
 			if (objects[i]->GetType() == BULLET)
 			{
 				if (dynamic_cast<EnemyBullet*>(objects[i])->GetHitFlag())
@@ -86,6 +119,7 @@ void Scene::Update()
 					objects.erase(objects.begin() + i);
 				}
 			}
+			//弾の当たり判定
 			if (objects[i]->GetType() == BOMB)
 			{
 				if (dynamic_cast<Bomb*>(objects[i])->GetHitFlag())
@@ -111,7 +145,7 @@ void Scene::Update()
 			x = 0.0f;
 		}
 
-
+		//ランダムに敵を生成する
 		switch (RandomEnemy)
 		{
 		case 0:
@@ -133,12 +167,33 @@ void Scene::Update()
 		CreateObject<Bomb>(Vector2D(objects[0]->GetLocation().x, objects[0]->GetLocation().y + 50.0f));
 	}
 
+	//時間カウント
+	if (gametime == 0)
+	{
+		StopSoundMem(BackGround_sound);
+		Finalize();
+	}
+	else
+	{
+		gametime--;
+	}
 }
 
 //描画処理
 void Scene::Draw() const
 {
+	//背景画像の描画
 	DrawExtendGraph(0, 0, 640, 480, gh, FALSE);
+	//タイマー画像の描画
+	DrawExtendGraph(10, 440, 50, 480, TimerImage, TRUE);
+	//スコアの描画
+	DrawExtendGraph(150, 440, 240, 480, ScoreImage,TRUE);
+	//ハイスコアの描画
+	DrawExtendGraph(390, 440, 490, 480, HighScoreImage, TRUE);
+	//時間の描画
+	DrawExtendGraph(50, 440, 80, 480, NumberImage[gametime / 150 / 10], TRUE);  //10の位
+	DrawExtendGraph(80, 440, 110, 480, NumberImage[gametime / 150 % 10], TRUE); //1の位
+
 	//シーンに存在するオブジェクトの描画処理
 	for (GameObject* obj : objects)
 	{
@@ -166,8 +221,6 @@ void Scene::Finalize()
 	objects.clear();
 }
 
-#ifdef D_PIVOT_CENTER
-
 //当たり判定チェック処理(矩形の中心で当たり判定を取る）
 void Scene::HitCheckObject(GameObject* a, GameObject* b)
 {
@@ -189,30 +242,3 @@ void Scene::HitCheckObject(GameObject* a, GameObject* b)
 	}
 	
 }
-
-#else
-
-//当たり判定チェック処理（左上頂点の座標から当たり判定計算を行う）
-void Scene::HitCheckObject(GameObject* a, GameObject* b)
-{
-	//右下頂点座標を取得する
-	Vector2D a_lower_right = a->GetLocation() + a->GetBoxSize();
-	Vector2D b_lower_right = b->GetLocation() + b->GetBoxSize();
-	//左上頂点座標を取得する
-	Vector2D a_upper_left = a->GetLocation() + a->GetBoxSize();
-	Vector2D b_upper_left = b->GetLocation() + b->GetBoxSize();
-
-	//矩形Aと矩形Bの位置関係を調べる
-	if ((a->GetLocation().x < b_lower_right.x) &&
-		(a->GetLocation().y < b_lower_right.y) &&
-		(a_lower_right.x > b->GetLocation().x) &&
-		(a_lower_right.y > b->GetLocation().y))
-		
-	{
-		//オブジェクトに対してHit判定を通知する
-		a->OnHitCollision(b);
-		b->OnHitCollision(a);
-	}
-}
-
-#endif // D_PIVOT_CENTER

@@ -56,16 +56,6 @@ void Player::Draw() const
 	//プレイヤー画像の描画
 	DrawRotaGraphF(location.x, location.y, 0.7, radian, image, TRUE, flip_flag);
 
-	//デバッグ用
-#if _DEBUG
-	//当たり判定の可視化
-	Vector2D box_collision_upper_left = location - (box_size / 2.0f);
-	Vector2D box_collsion_lower_right = location + (box_size / 2.0f);
-
-	DrawBoxAA(box_collision_upper_left.x, box_collision_upper_left.y,
-		box_collsion_lower_right.x, box_collsion_lower_right.y,
-		GetColor(255, 0, 0), FALSE);
-#endif
 }
 
 

@@ -9,7 +9,13 @@ private:
 	std::vector<GameObject*> objects;   //オブジェクトリスト
 	int gh;                             //グラフィックハンドル
 	int create_count;                   //敵が生成されるまでの時間
-	int BackGround_sound;
+	int BackGround_sound;               //メインBGM
+	int TimerImage;                     //タイマー画像
+	int ScoreImage;                     //スコア画像
+	int HighScoreImage;                 //ハイスコア画像
+	int gametime;                       //ゲーム時間
+
+	int NumberImage[NUMBER_IMAGE_MAX];  //数字の画像
 
 public:
 	Scene();

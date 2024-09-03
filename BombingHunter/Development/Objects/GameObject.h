@@ -4,6 +4,8 @@
 #define ENEMY (1)
 #define BOMB (2)
 #define BULLET (3)
+#define TIMELIMET (3000 * 3)
+#define NUMBER_IMAGE_MAX (10)
 
 #include"../Utility/Vector2D.h"
 
